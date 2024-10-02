@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "../../axios";
 import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify"; // Import ToastContainer and toast
+import "react-toastify/dist/ReactToastify.css"; // Import CSS for toast notifications
 import styles from "./Signup.module.css";
 import "@fortawesome/fontawesome-free/css/all.min.css"; // Import Font Awesome CSS
 
@@ -10,7 +12,6 @@ const Signup = () => {
     email: "",
     password: "",
   });
-  const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
   const navigate = useNavigate();
 
@@ -20,22 +21,26 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage("");
 
     try {
       const res = await axios.post("/signup", { ...signup });
 
       if (res.data.EnterAllDetails) {
-        setErrorMessage(res.data.EnterAllDetails);
+        toast.error(res.data.EnterAllDetails); // Show error toast
       } else if (res.data.AlreadyExist) {
-        setErrorMessage(res.data.AlreadyExist);
+        toast.error(res.data.AlreadyExist); // Show error toast
       } else {
         const userId = res.data._id;
-        navigate(`/home/${userId}`);
+        toast.success("Signup successful!"); // Show success toast
+
+        // Delay navigation by 2 seconds
+        setTimeout(() => {
+          navigate(`/home/${userId}`);
+        }, 2000);
       }
     } catch (error) {
       console.log(error);
-      setErrorMessage("An error occurred while signing up. Please try again.");
+      toast.error("An error occurred while signing up. Please try again."); // Show error toast
     }
   };
 
@@ -48,11 +53,11 @@ const Signup = () => {
     <div className={styles.container}>
       <form onSubmit={handleSubmit} className={styles.formContainer}>
         <h2>Signup</h2>
-        {errorMessage && <p className={styles.error}>{errorMessage}</p>}
 
         <div className={styles.inputContainer}>        
-        <i className={`fas fa-user ${styles.icon}`}></i> {/* Email Icon */}
-          <input autoFocus
+          <i className={`fas fa-user ${styles.icon}`}></i> {/* Name Icon */}
+          <input 
+            autoFocus
             placeholder="Enter Your Name"
             type="text"
             name="name"
@@ -62,7 +67,7 @@ const Signup = () => {
           />
         </div>
         <div className={styles.inputContainer}>
-        <i className={`fas fa-envelope ${styles.icon}`}></i> {/* Email Icon */}
+          <i className={`fas fa-envelope ${styles.icon}`}></i> {/* Email Icon */}
           <input
             placeholder="Enter Your Email"
             type="email"
@@ -71,11 +76,10 @@ const Signup = () => {
             value={signup.email}
             className={styles.input}
           />
-          
         </div>
 
         <div className={styles.inputContainer}>
-        <i className={`fas fa-lock ${styles.icon}`}></i>
+          <i className={`fas fa-lock ${styles.icon}`}></i>
           <input
             type={showPassword ? "text" : "password"} // Toggle between text and password types
             placeholder="Enter Your Password"
@@ -101,6 +105,9 @@ const Signup = () => {
           </Link>
         </p>
       </form>
+
+      {/* Toast Container for notifications */}
+      <ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick draggable pauseOnHover />
     </div>
   );
 };

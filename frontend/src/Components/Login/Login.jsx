@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import axios from "../../axios";
 import { Link, useNavigate } from "react-router-dom";
-import styles from "./Login.module.css"; 
+import { ToastContainer, toast } from "react-toastify"; // Import ToastContainer and toast
+import "react-toastify/dist/ReactToastify.css"; // Import CSS for toast notifications
+import styles from "./Login.module.css";
 import "@fortawesome/fontawesome-free/css/all.min.css"; // Import Font Awesome CSS
 
 const Login = () => {
   const [login, setLogin] = useState({ email: "", password: "" });
-  const [errorMessage, setErrorMessage] = useState(""); 
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
   const navigate = useNavigate();
 
@@ -16,26 +17,29 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(""); 
-
+  
     try {
       const res = await axios.post("/login", { ...login });
-
+  
       if (res.data.EnterAllDetails) {
-        setErrorMessage(res.data.EnterAllDetails);
+        toast.error( "Please enter all details."); // Show error toast with a specific icon
       } else if (res.data.NotExist) {
-        setErrorMessage(res.data.NotExist);
+        toast.error(<><i className="fas fa-user-times"></i> {res.data.NotExist}</>); // Show error toast with a specific icon
       } else if (res.data.Incorrect) {
-        setErrorMessage(res.data.Incorrect);
+        toast.error(<><i className="fas fa-lock"></i> {res.data.Incorrect}</>); // Show error toast with a specific icon
       } else {
-        const userId = res.data._id; 
-        navigate(`/home/${userId}`);
+        const userId = res.data._id;
+        toast.success(<><i className="fas fa-check-circle"></i> Login successful!</>); // Show success toast with a specific icon
+        setTimeout(() => {
+          navigate(`/home/${userId}`);
+        }, 2000);
       }
     } catch (error) {
       console.log(error);
-      setErrorMessage("An error occurred. Please try again.");
+      toast.error(<><i className="fas fa-exclamation-triangle"></i> An error occurred. Please try again.</>); // Show error toast with a specific icon
     }
   };
+  
 
   // Function to toggle password visibility
   const togglePasswordVisibility = () => {
@@ -46,13 +50,12 @@ const Login = () => {
     <div className={styles.container}>
       <form className={styles.formContainer} onSubmit={handleSubmit}>
         <h2 className={styles.title}>Login</h2>
-        {errorMessage && <p className={styles.error}>{errorMessage}</p>}
 
         <div className={styles.inputContainer1}>
-          <i className={`fas fa-envelope ${styles.icon}`}></i> {/* Email Icon */}
-          <input 
-            autoFocus 
-            autoComplete="off"
+          <i className={`fas fa-envelope ${styles.icon}`}></i>{" "}
+          {/* Email Icon */}
+          <input
+            autoFocus
             type="email"
             name="email"
             placeholder="Email"
@@ -72,17 +75,19 @@ const Login = () => {
             onChange={handleChange}
             value={login.password}
             className={styles.input}
-          />          <span className={styles.underline}></span>
-
+          />
+          <span className={styles.underline}></span>
           {/* Eye Icon for showing/hiding password */}
-          <i 
-            className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"} ${styles.eyeIcon}`} 
+          <i
+            className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"} ${styles.eyeIcon}`}
             onClick={togglePasswordVisibility}
           ></i>
         </div>
 
         <p className={styles.resetPassword}>
-          <Link to="/reset" className={styles.link}>Forgot password?</Link>
+          <Link to="/reset" className={styles.link}>
+            Forgot password?
+          </Link>
         </p>
 
         <button type="submit" className={styles.button}>
@@ -91,9 +96,21 @@ const Login = () => {
 
         <p className={styles.text}>
           Don't have an account?{" "}
-          <Link to="/signup" className={styles.link}>Sign up</Link>
+          <Link to="/signup" className={styles.link}>
+            Sign up
+          </Link>
         </p>
       </form>
+
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };

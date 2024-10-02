@@ -3,10 +3,11 @@ import axios from "../../axios";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./PasswordReset.module.css"; // Reuse styles from Login.module.css
 import "@fortawesome/fontawesome-free/css/all.min.css"; // Import Font Awesome CSS
+import { ToastContainer, toast } from "react-toastify"; // Import ToastContainer and toast
+import "react-toastify/dist/ReactToastify.css"; // Import toast styles
 
 const PasswordReset = () => {
   const [login, setLogin] = useState({ email: "", otp: "", newPassword: "" });
-  const [errorMessage, setErrorMessage] = useState("");
   const [isOTPSent, setIsOTPSent] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -17,23 +18,22 @@ const PasswordReset = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage("");
 
     if (!isOTPSent) {
       try {
         const res = await axios.post("/send-otp", { email: login.email });
 
         if (res.data.emailRequire) {
-          setErrorMessage("Please enter your email address.");
+          toast.error("Please enter your email address."); // Show toast notification
         } else if (res.data.userNotExist) {
-          setErrorMessage("No account found with this email address.");
+          toast.error("No account found with this email address."); // Show toast notification
         } else if (res.data.msg === "OTP sent successfully") {
-          alert("OTP has been sent to your email. Please check your inbox.");
+          toast.success("OTP has been sent to your email. Please check your inbox."); // Show success toast
           setIsOTPSent(true);
         }
       } catch (error) {
         console.log(error);
-        setErrorMessage("An error occurred. Please try again.");
+        toast.error("An error occurred. Please try again."); // Show toast notification
       }
     } else {
       try {
@@ -44,16 +44,18 @@ const PasswordReset = () => {
         });
 
         if (res.data.otpNotValid) {
-          setErrorMessage("Invalid OTP. Please try again.");
+          toast.error("Invalid OTP. Please try again."); // Show toast notification
+        } else if (res.data.allFieldsRequired) {
+          toast.error("Please fill all the fields."); // Show toast notification
         } else if (res.data.otpExpired) {
-          setErrorMessage("OTP has expired. Please request a new one.");
+          toast.error("OTP has expired. Please request a new one."); // Show toast notification
         } else if (res.data.updatedPassword) {
-          alert("Password updated successfully! You can now log in.");
+          toast.success("Password updated successfully! You can now log in."); // Show success toast
           navigate("/");
         }
       } catch (error) {
         console.log(error);
-        setErrorMessage("An error occurred while updating the password.");
+        toast.error("An error occurred while updating the password."); // Show toast notification
       }
     }
   };
@@ -67,7 +69,6 @@ const PasswordReset = () => {
     <div className={styles.container}>
       <form className={styles.formContainer} onSubmit={handleSubmit}>
         <h2 className={styles.title}>Password Reset</h2>
-        {errorMessage && <p className={styles.error}>{errorMessage}</p>}
 
         <div className={styles.inputContainer1}>
           <i className={`fas fa-envelope ${styles.icon}`}></i>
@@ -80,7 +81,6 @@ const PasswordReset = () => {
             onChange={handleChange}
             value={login.email}
             className={styles.input}
-            
           />
           <span className={styles.underline}></span>
         </div>
@@ -96,7 +96,6 @@ const PasswordReset = () => {
                 onChange={handleChange}
                 value={login.otp}
                 className={styles.input}
-                
               />
               <span className={styles.underline}></span>
             </div>
@@ -110,7 +109,6 @@ const PasswordReset = () => {
                 onChange={handleChange}
                 value={login.newPassword}
                 className={styles.input}
-                
               />
               <span className={styles.underline}></span>
 
@@ -131,6 +129,8 @@ const PasswordReset = () => {
           <Link to="/" className={styles.link}>Login</Link>
         </p>
       </form>
+      <ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick draggable pauseOnHover />
+
     </div>
   );
 };

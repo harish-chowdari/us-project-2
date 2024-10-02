@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import axios from "../../axios";
 import { Link, useNavigate } from "react-router-dom";
-import styles from "./PasswordReset.module.css";
+import styles from "./PasswordReset.module.css"; // Reuse styles from Login.module.css
+import "@fortawesome/fontawesome-free/css/all.min.css"; // Import Font Awesome CSS
 
 const PasswordReset = () => {
   const [login, setLogin] = useState({ email: "", otp: "", newPassword: "" });
   const [errorMessage, setErrorMessage] = useState("");
   const [isOTPSent, setIsOTPSent] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -56,43 +58,67 @@ const PasswordReset = () => {
     }
   };
 
+  // Function to toggle password visibility
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevState) => !prevState);
+  };
+
   return (
-    <form className={styles.container} onSubmit={handleSubmit}>
-      <div className={styles.formContainer}>
-        <h2>Password Reset</h2>
+    <div className={styles.container}>
+      <form className={styles.formContainer} onSubmit={handleSubmit}>
+        <h2 className={styles.title}>Password Reset</h2>
         {errorMessage && <p className={styles.error}>{errorMessage}</p>}
 
-        <input
-          placeholder="Enter Your Email"
-          type="email"
-          name="email"
-          onChange={handleChange}
-          value={login.email}
-          className={styles.input}
-          required
-        />
+        <div className={styles.inputContainer1}>
+          <i className={`fas fa-envelope ${styles.icon}`}></i>
+          <input
+            autoFocus
+            autoComplete="off"
+            type="email"
+            name="email"
+            placeholder="Email"
+            onChange={handleChange}
+            value={login.email}
+            className={styles.input}
+            
+          />
+          <span className={styles.underline}></span>
+        </div>
 
         {isOTPSent && (
           <>
-            <input
-              placeholder="Enter OTP"
-              type="text"
-              name="otp"
-              onChange={handleChange}
-              value={login.otp}
-              className={styles.input}
-              required
-            />
+            <div className={styles.inputContainer2}>
+              <i className={`fas fa-lock ${styles.icon}`}></i>
+              <input
+                type="text"
+                name="otp"
+                placeholder="Enter OTP"
+                onChange={handleChange}
+                value={login.otp}
+                className={styles.input}
+                
+              />
+              <span className={styles.underline}></span>
+            </div>
 
-            <input
-              placeholder="Enter New Password"
-              type="password"
-              name="newPassword"
-              onChange={handleChange}
-              value={login.newPassword}
-              className={styles.input}
-              required
-            />
+            <div className={styles.inputContainer2}>
+              <i className={`fas fa-lock ${styles.icon}`}></i>
+              <input
+                type={showPassword ? "text" : "password"}
+                name="newPassword"
+                placeholder="New Password"
+                onChange={handleChange}
+                value={login.newPassword}
+                className={styles.input}
+                
+              />
+              <span className={styles.underline}></span>
+
+              <i
+                className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"} ${styles.eyeIcon}`}
+                onClick={togglePasswordVisibility}
+              ></i>
+            </div>
           </>
         )}
 
@@ -100,14 +126,12 @@ const PasswordReset = () => {
           {isOTPSent ? "Reset Password" : "Send OTP"}
         </button>
 
-        <p className={styles.passwordText}>
+        <p className={styles.text}>
           Remember your password?{" "}
-          <Link to="/" className={styles.link}>
-            Login
-          </Link>
+          <Link to="/" className={styles.link}>Login</Link>
         </p>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 };
 

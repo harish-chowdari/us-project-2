@@ -8,12 +8,14 @@ const QrCodeScanner = () => {
 
   const navigate = useNavigate();
 
+  const { userId } = localStorage.getItem("userId")
+
   const handleScan = (data) => {
     if (data) {
       const scannedData = data.text; 
       const id = extractIdFromUrl(scannedData);  
       setShowScanner(false);  
-      navigate(`/product/${id}`);
+      navigate(`/home/product/${id}`);
     }
   };
 

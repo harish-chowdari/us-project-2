@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+
 const UserSchema = new mongoose.Schema({
     name: {
         type: String
@@ -17,7 +18,22 @@ const UserSchema = new mongoose.Schema({
     },
     otpExpiresAt: {
         type: Date
-    }
+    },
+    warranty: [{
+        purchaseDate: {
+            type: Date,
+            required: true
+        },
+        warrantyPeriod: {
+            type: Date,
+            required: true  
+        },
+        purchaseAddress: {
+            type: String,
+            required: true
+        }
+    }]
+
 }, {timestamps: true});
 
 module.exports = mongoose.model("User", UserSchema);

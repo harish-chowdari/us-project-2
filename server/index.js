@@ -20,6 +20,9 @@ app.use("/api", OtpRouter)
 const ProductRouter = require("./Routes/ProductRoutes")
 app.use("/api", ProductRouter)
 
+const WarrantyRouter = require("./Routes/WarrantyRoutes")
+app.use("/api", WarrantyRouter)
+
 const port = process.env.PORT || 3000
 
 

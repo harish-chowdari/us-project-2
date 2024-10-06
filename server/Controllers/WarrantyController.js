@@ -1,29 +1,72 @@
-const WarrantySchema = require("../Models/WarrantyModel");
+const User = require("../Models/AuthenticationModel"); // Import the User model
 
+const addWarranty = async (req, res) => {
+  const { userId } = req.params;
 
-const claimWarranty = (req, res) => {
-    const { productName, purchaseDate, warrantyPeriod, purchaseAddress } = req.body;
-
-    if (!productName || !purchaseDate || !warrantyPeriod || !purchaseAddress) {
-        return res.status(200).json({ EnterAllDetails: "Please fill all the fields" });
+  try {
+    if (!userId) {
+      return res.status(200).json({ missingId: "User ID is required" });
     }
 
-    if (warrantyPeriod < purchaseDate) {
-        return res.status(200).json({ WarrantyExpired: "Warranty period has expired" });
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(200).json({ userNotFound: "User not found" });
     }
 
-    const now = new Date();
+    const { purchaseDate, warrantyPeriod, purchaseAddress } = req.body;
 
-    if (warrantyPeriod < now) {
-        return res.status(200).json({ WarrantyExpired: "Warranty period has expired" });
+    if (!purchaseDate || !warrantyPeriod || !purchaseAddress) {
+      return res
+        .status(200)
+        .json({
+          missingFields:
+            "Purchase date, warranty period, and purchase address are required",
+        });
     }
 
-    const data = new WarrantySchema({
-        productName,
-        purchaseDate,
-        warrantyPeriod,
-        purchaseAddress
+    user.warranty.push({
+      purchaseDate,
+      warrantyPeriod,
+      purchaseAddress,
     });
-    data.save();
-    res.json(data);
+
+    await user.save();
+
+    return res
+      .status(200)
+      .json({ warrantyAdded: "Warranty added successfully" });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while adding the warranty" });
+  }
+};
+
+async function getWarranty(req, res) {
+  const { userId } = req.params;
+  try {
+    if (!userId) {
+      return res.status(200).json({ missingId: "User ID is required" });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(200).json({ userNotFound: "User not found" });
+    }
+
+    return res.status(200).json({ warranty: user.warranty });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while getting the warranty" });
+  }
 }
+
+module.exports = {
+  addWarranty,
+  getWarranty,
+};

@@ -8,32 +8,36 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const ClaimWarranty = () => {
   const [productData, setProductData] = useState({
-    productName: "",
     purchaseDate: "",
     warrantyPeriod: "",
     purchaseAddress: "",
   });
 
+  const userId = localStorage.getItem("userId");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await axios.post("/claim-warranty", { ...productData });
-      console.log(res);
-      console.log(productData);
+      toast.dismiss();
+      const res = await axios.post(`/claim-warranty/${userId}`, {
+        purchaseDate:productData.purchaseDate,
+        warrantyPeriod: productData.warrantyPeriod,
+        purchaseAddress: productData.purchaseAddress
+        
+      });
 
-      
+      if (res.data.missingFields) {
+        toast.error("All fields are required!");
+        
+      }
 
-      if (res.data.EnterAllDetails) {
-        toast.error(res.data.EnterAllDetails);
-      }
-      
-      if (res.data.warrantyClaimed) {
-        toast.error(res.data.warrantyClaimed);
-      }
-      
-      else {
+      else if (res.data.userNotFound) {
+        toast.error(res.data.userNotFound);
+        
+      } else if(res.data.warrantyAdded) {
         toast.success("Claimed warranty successfully!");
+        
       }
     } catch (error) {
       console.log(error);
@@ -48,16 +52,6 @@ const ClaimWarranty = () => {
       </div>
 
       <div className={Styles.formGroup}>
-        <label htmlFor="productname">Product Name:</label>
-        <input
-          type="text"
-          id="productname"
-          name="productname"
-          value={productData.productname}
-          onChange={(e) =>
-            setProductData({ ...productData, productname: e.target.value })
-          }
-        />
         <label htmlFor="purchaseDate">Purchase Date:</label>
         <input
           type="date"
@@ -68,16 +62,18 @@ const ClaimWarranty = () => {
             setProductData({ ...productData, purchaseDate: e.target.value })
           }
         />
+
         <label htmlFor="warrantyPeriod">Warranty Period:</label>
         <input
-          type="text"
+          type="date"
           id="warrantyPeriod"
           name="warrantyPeriod"
           value={productData.warrantyPeriod}
           onChange={(e) =>
             setProductData({ ...productData, warrantyPeriod: e.target.value })
           }
-        />
+        /> 
+
         <label htmlFor="purchaseAddress">Purchase Address:</label>
         <input
           type="text"
@@ -92,7 +88,9 @@ const ClaimWarranty = () => {
 
       <ToastContainer />
 
-      <button className={Styles.button} type="submit">Submit</button>
+      <button className={Styles.button} type="submit">
+        Submit
+      </button>
     </form>
   );
 };

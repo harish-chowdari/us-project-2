@@ -5,6 +5,7 @@
     gap: 20px;
     align-items: center;
     min-height: 100vh;
+    margin-left: 200px;
     background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
 }
 
@@ -69,6 +70,7 @@
 
     .container{
         padding: 20px;
+        margin-left: 0px;
     }
     
     .container h2{

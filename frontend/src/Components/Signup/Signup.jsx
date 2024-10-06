@@ -31,11 +31,12 @@ const Signup = () => {
         toast.error(res.data.AlreadyExist); // Show error toast
       } else {
         const userId = res.data._id;
-        toast.success("Signup successful!"); // Show success toast
+        toast.success("Signup successful!"); 
+        localStorage.setItem("userId", userId);// Show success toast
 
         // Delay navigation by 2 seconds
         setTimeout(() => {
-          navigate(`/home/${userId}`);
+          navigate(`/home`);
           window.location.reload()
         }, 2000);
       }

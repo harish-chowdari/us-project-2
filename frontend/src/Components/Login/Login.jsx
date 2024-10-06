@@ -34,7 +34,7 @@ const Login = () => {
         
      // Show success toast with a specific icon
         setTimeout(() => {
-          navigate(`/home/${userId}`);
+          navigate(`/home`);
           window.location.reload()
         }, 2000);
       }

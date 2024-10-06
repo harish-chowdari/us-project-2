@@ -1,10 +1,11 @@
 const express = require("express");
-const { ClaimWarranty } = require("../Controllers/ClaimWarrantyController");
+const { addWarranty, getWarranty } = require("../Controllers/WarrantyController");
 const router = express.Router();
 
 
-router.post("/claim-warranty", ClaimWarranty);
+router.post("/claim-warranty/:userId", addWarranty);
 
+router.get("/warranty/:userId", getWarranty);
 
  
 module.exports = router;

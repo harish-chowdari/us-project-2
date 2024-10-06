@@ -4,6 +4,8 @@
     justify-content: space-around;
     align-items: flex-start;
     min-height: 100vh;
+    margin-left: 200px;
+    
     background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
 }
 

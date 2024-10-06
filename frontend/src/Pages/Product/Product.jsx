@@ -7,6 +7,8 @@ const Product = () => {
   const [productData, setProductData] = useState([]);
   const { productId } = useParams();
 
+  const { userId } = useParams();
+
   useEffect(() => {
     const getProductData = async () => {
       try {
@@ -35,7 +37,7 @@ const Product = () => {
         <h3>Warrnty Left </h3>
         <p> {warranty} days</p>
         
-        <Link to={`/claim/${productId}`}>
+        <Link to={`/home/claim/${productId}`}>
           <button className={Styles.claimButton}>Claim</button>
         </Link>
 

@@ -42,3 +42,15 @@
     margin-top: 20px;
     
 }
+
+@media screen and (max-width: 500px) {
+
+    .container{
+        margin-left: 0px;
+    }
+
+    .container h1{
+        font-size: 17px;
+    }
+    
+}

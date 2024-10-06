@@ -37,9 +37,7 @@ const Product = () => {
         <h3>Warrnty Left </h3>
         <p> {warranty} days</p>
         
-        <Link to={`/home/claim/${productId}`}>
-          <button className={Styles.claimButton}>Claim</button>
-        </Link>
+        
 
         <div className={Styles.product}>
           <img src={productData.productImage} alt="product img" />
@@ -77,7 +75,11 @@ const Product = () => {
         <p className={Styles.description}>
           <strong>Description :</strong> {productData.description}
         </p>
+        <Link to={`/home/claim/${productId}`}>
+          <button className={Styles.claimButton}>Claim</button>
+        </Link>
       </div>
+      
     </div>
   );
 };

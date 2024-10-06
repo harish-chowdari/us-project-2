@@ -36,6 +36,7 @@ const Signup = () => {
         // Delay navigation by 2 seconds
         setTimeout(() => {
           navigate(`/home/${userId}`);
+          window.location.reload()
         }, 2000);
       }
     } catch (error) {
@@ -80,7 +81,7 @@ const Signup = () => {
 
         <div className={styles.inputContainer}>
           <i className={`fas fa-lock ${styles.icon}`}></i>
-          <input
+          <input autoComplete="off"
             type={showPassword ? "text" : "password"} // Toggle between text and password types
             placeholder="Enter Your Password"
             name="password"

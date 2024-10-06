@@ -29,14 +29,18 @@ const Login = () => {
         toast.error(<><i className="fas fa-lock"></i> {res.data.Incorrect}</>); // Show error toast with a specific icon
       } else {
         const userId = res.data._id;
-        toast.success(<><i className="fas fa-check-circle"></i> Login successful!</>); // Show success toast with a specific icon
+        localStorage.setItem("userId", userId);
+        toast.success("Login successful!");
+        
+     // Show success toast with a specific icon
         setTimeout(() => {
           navigate(`/home/${userId}`);
+          window.location.reload()
         }, 2000);
       }
     } catch (error) {
       console.log(error);
-      toast.error(<><i className="fas fa-exclamation-triangle"></i> An error occurred. Please try again.</>); // Show error toast with a specific icon
+      toast.error("An error occurred. Please try again."); // Show error toast with a specific icon
     }
   };
   
@@ -68,8 +72,8 @@ const Login = () => {
 
         <div className={styles.inputContainer2}>
           <i className={`fas fa-lock ${styles.icon}`}></i> {/* Lock Icon */}
-          <input
-            type={showPassword ? "text" : "password"} // Toggle between text and password types
+          <input autoComplete="off"
+            type={showPassword ? "text"  : "password"} // Toggle between text and password types
             name="password"
             placeholder="Password"
             onChange={handleChange}

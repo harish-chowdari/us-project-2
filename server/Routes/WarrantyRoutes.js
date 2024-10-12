@@ -7,5 +7,6 @@ router.post("/claim-warranty/:userId", addWarranty);
 
 router.get("/warranty/:userId", getWarranty);
 
+
  
 module.exports = router;

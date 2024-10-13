@@ -1,6 +1,7 @@
 const User = require("../Models/AuthenticationModel");
 const nodemailer = require("nodemailer");
 const cron = require("node-cron");
+const Emails = require("../Models/EmailsModel")
 
 
 
@@ -66,10 +67,9 @@ async function getWarranty(req, res) {
     return res
       .status(500)
       .json({ error: "An error occurred while getting the warranty" });
-  }
+  } 
 }
 
-const Emails = require("../Models/EmailsModel")
 
 
 const sendWarrantyRemainderMail = async () => {
@@ -95,7 +95,7 @@ const sendWarrantyRemainderMail = async () => {
         const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24));
 
         if ((differenceInDays === 60 || differenceInDays === 30) && differenceInDays > 0) {
-          // Check if an email was already sent for this warranty today
+
           const emailRecord = await Emails.findOne({
             
             warrantyId: warranty._id,
